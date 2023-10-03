@@ -9,11 +9,19 @@ namespace AnimatorAsCode.V1.VRCDestructiveWorkflow
     // ReSharper disable once InconsistentNaming
     public static class AacVRCDestructiveWorkflowExtensions
     {
-        private interface IAdditionalDataAvatarDescriptor {}
+        private class AdditionalDataAvatarDescriptor
+        {
+            public VRCAvatarDescriptor Descriptor { get; }
+
+            public AdditionalDataAvatarDescriptor(VRCAvatarDescriptor avatarDescriptor)
+            {
+                Descriptor = avatarDescriptor;
+            }
+        }
         
         public static AacConfiguration WithAvatarDescriptor(this AacConfiguration that, VRCAvatarDescriptor avatarDescriptor)
         {
-            return that.WithAdditonalData(typeof(IAdditionalDataAvatarDescriptor), avatarDescriptor);
+            return that.WithAdditionalData(new AdditionalDataAvatarDescriptor(avatarDescriptor));
         }
         
         /// Create the main Fx layer of that system, clearing the previous one of the same system. You are not obligated to have a main layer.
@@ -99,14 +107,14 @@ namespace AnimatorAsCode.V1.VRCDestructiveWorkflow
         private static VRCAvatarDescriptor AvatarDescriptor(AacFlBase that)
         {
             var foundAvatarDescriptor =
-                that.InternalConfiguration().TryGetAdditionalData(typeof(IAdditionalDataAvatarDescriptor), out var avatarDescriptor);
+                that.InternalConfiguration().TryGetAdditionalData<AdditionalDataAvatarDescriptor>(out var additionalData);
             if (!foundAvatarDescriptor)
             {
                 throw new InvalidOperationException(
                     "Could not find avatar descriptor in configuration. Invoke .WithAvatarDescriptor(...) on the configuration object");
             }
 
-            return (VRCAvatarDescriptor)avatarDescriptor;
+            return additionalData.Descriptor;
         }
     }
 }
