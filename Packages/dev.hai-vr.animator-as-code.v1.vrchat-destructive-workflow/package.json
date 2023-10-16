@@ -1,7 +1,7 @@
 {
   "name": "dev.hai-vr.animator-as-code.v1.vrchat-destructive-workflow",
   "displayName": "Animator As Code - VRChat (Destructive Workflow)",
-  "version": "1.0.9910-alpha",
+  "version": "1.0.9910",
   "unity": "2019.4",
   "description": "Animator As Code - VRChat (Destructive Workflow)",
   "vrchatVersion" : "2022.1.1",
