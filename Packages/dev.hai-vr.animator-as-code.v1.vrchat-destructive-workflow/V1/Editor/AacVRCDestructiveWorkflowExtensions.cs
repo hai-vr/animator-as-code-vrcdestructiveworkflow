@@ -63,17 +63,19 @@ namespace AnimatorAsCode.V1.VRCDestructiveWorkflow
         private static AacFlLayer DoCreateMainLayerOnController(AacFlBase that, VRCAvatarDescriptor.AnimLayerType animType)
         {
             var animator = AnimatorOf(AvatarDescriptor(that), animType);
-            var layerName = that.InternalConfiguration().DefaultsProvider.ConvertLayerName(that.InternalConfiguration().SystemName);
+            var config = AacAccessorForExtensions.AccessConfiguration(that);
+            var layerName = config.DefaultsProvider.ConvertLayerName(config.SystemName);
 
-            return that.InternalDoCreateLayer(animator, layerName);
+            return AacAccessorForExtensions.AccessCreateLayer(that, animator, layerName);
         }
 
         private static AacFlLayer DoCreateSupportingLayerOnController(AacFlBase that, VRCAvatarDescriptor.AnimLayerType animType, string suffix)
         {
             var animator = AnimatorOf(AvatarDescriptor(that), animType);
-            var layerName = that.InternalConfiguration().DefaultsProvider.ConvertLayerNameWithSuffix(that.InternalConfiguration().SystemName, suffix);
+            var config = AacAccessorForExtensions.AccessConfiguration(that);
+            var layerName = config.DefaultsProvider.ConvertLayerNameWithSuffix(config.SystemName, suffix);
 
-            return that.InternalDoCreateLayer(animator, layerName);
+            return AacAccessorForExtensions.AccessCreateLayer(that, animator, layerName);
         }
 
         internal static AnimatorController AnimatorOf(VRCAvatarDescriptor ad, VRCAvatarDescriptor.AnimLayerType animLayerType)
@@ -84,30 +86,34 @@ namespace AnimatorAsCode.V1.VRCDestructiveWorkflow
         /// Remove all main layers matching that system from all animators of the Avatar descriptor.
         public static void RemoveAllMainLayers(this AacFlBase that)
         {
-            var layerName = that.InternalConfiguration().SystemName;
-            RemoveLayerOnAllControllers(that, that.InternalConfiguration().DefaultsProvider.ConvertLayerName(layerName));
+            var config = AacAccessorForExtensions.AccessConfiguration(that);
+            var layerName = config.SystemName;
+            RemoveLayerOnAllControllers(that, config.DefaultsProvider.ConvertLayerName(layerName));
         }
 
         /// Remove all supporting layers matching that system and suffix from all animators of the Avatar descriptor.
         public static void RemoveAllSupportingLayers(this AacFlBase that, string suffix)
         {
-            var layerName = that.InternalConfiguration().SystemName;
-            RemoveLayerOnAllControllers(that, that.InternalConfiguration().DefaultsProvider.ConvertLayerNameWithSuffix(layerName, suffix));
+            var config = AacAccessorForExtensions.AccessConfiguration(that);
+            var layerName = config.SystemName;
+            RemoveLayerOnAllControllers(that, config.DefaultsProvider.ConvertLayerNameWithSuffix(layerName, suffix));
         }
 
         private static void RemoveLayerOnAllControllers(AacFlBase that, string layerName)
         {
+            var config = AacAccessorForExtensions.AccessConfiguration(that);
             var layers = AvatarDescriptor(that).baseAnimationLayers.Select(layer => layer.animatorController).Where(layer => layer != null).Distinct().ToList();
             foreach (var customAnimLayer in layers)
             {
-                new AacAnimatorRemoval((AnimatorController) customAnimLayer).RemoveLayer(that.InternalConfiguration().DefaultsProvider.ConvertLayerName(layerName));
+                new AacAnimatorRemoval((AnimatorController) customAnimLayer).RemoveLayer(config.DefaultsProvider.ConvertLayerName(layerName));
             }
         }
 
         private static VRCAvatarDescriptor AvatarDescriptor(AacFlBase that)
         {
+            var config = AacAccessorForExtensions.AccessConfiguration(that);
             var foundAvatarDescriptor =
-                that.InternalConfiguration().TryGetAdditionalData<AdditionalDataAvatarDescriptor>(out var additionalData);
+                config.TryGetAdditionalData<AdditionalDataAvatarDescriptor>(out var additionalData);
             if (!foundAvatarDescriptor)
             {
                 throw new InvalidOperationException(
