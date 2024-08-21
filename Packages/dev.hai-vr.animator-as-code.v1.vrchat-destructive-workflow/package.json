@@ -1,9 +1,9 @@
 {
   "name": "dev.hai-vr.animator-as-code.v1.vrchat-destructive-workflow",
-  "displayName": "Animator As Code V1 - VRChat Destructive Workflow (Beta)",
-  "version": "1.1.0-beta.3",
+  "displayName": "Animator As Code V1 - VRChat Destructive Workflow",
+  "version": "1.1.0",
   "unity": "2019.4",
-  "description": "Animator As Code - VRChat Destructive Workflow (Beta)",
+  "description": "VRChat Avatars extension methods for operations that edit the VRCAvatarDescriptor animator controllers directly.",
   "vrchatVersion" : "2022.1.1",
   "author" : {
     "name" : "Haï~"
